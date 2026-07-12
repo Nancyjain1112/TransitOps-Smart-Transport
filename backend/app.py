@@ -16,6 +16,10 @@ from models import (
 
 from routes.vehicle import vehicle_bp
 from routes.driver import driver_bp
+from routes.trip import trip_bp 
+from routes.fuel import fuel_bp
+from routes.maintenance import maintenance_bp
+from routes.expense import expense_bp
 
 app = Flask(__name__)
 
@@ -25,6 +29,10 @@ db.init_app(app)
 
 app.register_blueprint(vehicle_bp)
 app.register_blueprint(driver_bp)
+app.register_blueprint(trip_bp)
+app.register_blueprint(fuel_bp)
+app.register_blueprint(maintenance_bp)
+app.register_blueprint(expense_bp)
 
 @app.route("/")
 def home():
