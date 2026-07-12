@@ -14,12 +14,17 @@ from models import (
     Expense
 )
 
+from routes.vehicle import vehicle_bp
+from routes.driver import driver_bp
+
 app = Flask(__name__)
 
 app.config.from_object(Config)
 
 db.init_app(app)
 
+app.register_blueprint(vehicle_bp)
+app.register_blueprint(driver_bp)
 
 @app.route("/")
 def home():
