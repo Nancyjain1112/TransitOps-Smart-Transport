@@ -4,7 +4,15 @@ from config import Config
 
 from database.db import db
 
-from models import User, Vehicle, Driver
+from models import (
+    User,
+    Vehicle,
+    Driver,
+    Trip,
+    Maintenance,
+    Fuel,
+    Expense
+)
 
 app = Flask(__name__)
 
