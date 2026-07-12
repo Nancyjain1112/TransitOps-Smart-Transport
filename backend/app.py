@@ -20,6 +20,8 @@ from routes.trip import trip_bp
 from routes.fuel import fuel_bp
 from routes.maintenance import maintenance_bp
 from routes.expense import expense_bp
+from routes.dashboard import dashboard_bp
+from routes.reports import reports_bp
 
 app = Flask(__name__)
 
@@ -33,6 +35,8 @@ app.register_blueprint(trip_bp)
 app.register_blueprint(fuel_bp)
 app.register_blueprint(maintenance_bp)
 app.register_blueprint(expense_bp)
+app.register_blueprint(dashboard_bp)
+app.register_blueprint(reports_bp)
 
 @app.route("/")
 def home():
