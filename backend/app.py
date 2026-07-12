@@ -4,9 +4,7 @@ from config import Config
 
 from database.db import db
 
-from models.user import User
-from models.vehicle import Vehicle
-from models.driver import Driver
+from models import User, Vehicle, Driver
 
 app = Flask(__name__)
 
