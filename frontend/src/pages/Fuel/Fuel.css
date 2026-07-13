@@ -1,0 +1,92 @@
+.page{
+    padding:25px;
+}
+
+.fuel-form{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+
+    gap:15px;
+
+    background:#fff;
+
+    padding:20px;
+
+    border-radius:12px;
+
+    box-shadow:0 6px 15px rgba(0,0,0,.08);
+
+    margin-bottom:25px;
+
+}
+
+.fuel-form input,
+.fuel-form select{
+
+    padding:12px;
+
+    border:1px solid #ddd;
+
+    border-radius:8px;
+
+    font-size:15px;
+
+}
+
+.fuel-form button{
+
+    background:#2563eb;
+
+    color:white;
+
+    border:none;
+
+    border-radius:8px;
+
+    padding:12px;
+
+    cursor:pointer;
+
+}
+
+.fuel-form button:hover{
+
+    background:#1d4ed8;
+
+}
+
+table{
+
+    width:100%;
+
+    background:white;
+
+    border-collapse:collapse;
+
+    border-radius:12px;
+
+    overflow:hidden;
+
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+
+}
+
+th{
+
+    background:#2563eb;
+
+    color:white;
+
+    padding:15px;
+
+}
+
+td{
+
+    padding:14px;
+
+    border-bottom:1px solid #eee;
+
+}

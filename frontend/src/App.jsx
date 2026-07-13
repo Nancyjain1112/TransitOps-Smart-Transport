@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import Login from "./pages/Login/Login";
 import Dashboard from "./pages/Dashboard/Dashboard";
+import Fuel from "./pages/Fuel/Fuel";
 
 import Vehicles from "./pages/Vehicles/Vehicles";
 import Drivers from "./pages/Drivers/Drivers";
@@ -32,6 +33,8 @@ function App() {
           <Route path="/drivers" element={<Drivers />} />
 
           <Route path="/trips" element={<Trips />} />
+
+          <Route path="/fuel" element={<Fuel />} />
 
           <Route path="/maintenance" element={<Maintenance />} />
 

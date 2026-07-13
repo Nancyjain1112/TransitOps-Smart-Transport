@@ -9,6 +9,7 @@ function Sidebar() {
     { name: "Vehicles", path: "/vehicles", icon: "🚛" },
     { name: "Drivers", path: "/drivers", icon: "👨" },
     { name: "Trips", path: "/trips", icon: "🛣" },
+     { name: "Fuel", path: "/fuel", icon: "⛽" }, 
     { name: "Maintenance", path: "/maintenance", icon: "🔧" },
     { name: "Expenses", path: "/expenses", icon: "💰" },
     { name: "Reports", path: "/reports", icon: "📊" },
