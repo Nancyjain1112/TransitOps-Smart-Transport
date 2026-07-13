@@ -1,60 +1,223 @@
+import { useEffect, useState } from "react";
+import api from "../../services/api";
 import "./Drivers.css";
 
 function Drivers() {
 
-const drivers=[
-{id:1,name:"Rahul Patel",phone:"9876543210",license:"GJ202401",status:"Available"},
-{id:2,name:"Amit Shah",phone:"9988776655",license:"GJ202402",status:"On Trip"},
-{id:3,name:"Vivek Kumar",phone:"8899776655",license:"GJ202403",status:"Leave"}
-];
+  const emptyForm = {
+    full_name: "",
+    license_number: "",
+    license_category: "",
+    license_expiry: "",
+    contact_number: "",
+    safety_score: 100,
+    status: "Available"
+  };
 
-return(
+  const [drivers, setDrivers] = useState([]);
+  const [form, setForm] = useState(emptyForm);
+  const [editingId, setEditingId] = useState(null);
 
-<div className="page">
+  useEffect(() => {
+    loadDrivers();
+  }, []);
 
-<h2>Driver Management</h2>
+  const loadDrivers = async () => {
+    const res = await api.get("/drivers");
+    setDrivers(res.data);
+  };
 
-<button className="add-btn">+ Add Driver</button>
+  const handleChange = (e) => {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value
+    });
+  };
 
-<table>
+  const saveDriver = async (e) => {
 
-<thead>
+    e.preventDefault();
 
-<tr>
+    if (editingId) {
 
-<th>ID</th>
-<th>Name</th>
-<th>Phone</th>
-<th>License</th>
-<th>Status</th>
+      await api.put(`/drivers/${editingId}`, {
+        full_name: form.full_name,
+        contact_number: form.contact_number,
+        status: form.status
+      });
 
-</tr>
+      alert("Driver Updated");
 
-</thead>
+    } else {
 
-<tbody>
+      await api.post("/drivers", form);
 
-{drivers.map(driver=>(
+      alert("Driver Added");
 
-<tr key={driver.id}>
+    }
 
-<td>{driver.id}</td>
-<td>{driver.name}</td>
-<td>{driver.phone}</td>
-<td>{driver.license}</td>
-<td>{driver.status}</td>
+    setEditingId(null);
+    setForm(emptyForm);
 
-</tr>
+    loadDrivers();
 
-))}
+  };
 
-</tbody>
+  const editDriver = (driver) => {
 
-</table>
+    setEditingId(driver.id);
 
-</div>
+    setForm(driver);
 
-)
+  };
+
+  const deleteDriver = async (id) => {
+
+    if (!window.confirm("Delete Driver?")) return;
+
+    await api.delete(`/drivers/${id}`);
+
+    loadDrivers();
+
+  };
+
+  return (
+
+    <div className="page">
+
+      <h2>👨‍✈️ Driver Management</h2>
+
+      <form className="vehicle-form" onSubmit={saveDriver}>
+
+        <input
+          name="full_name"
+          placeholder="Full Name"
+          value={form.full_name}
+          onChange={handleChange}
+        />
+
+        <input
+          name="license_number"
+          placeholder="License Number"
+          value={form.license_number}
+          onChange={handleChange}
+        />
+
+        <input
+          name="license_category"
+          placeholder="License Category"
+          value={form.license_category}
+          onChange={handleChange}
+        />
+
+        <input
+          type="date"
+          name="license_expiry"
+          value={form.license_expiry}
+          onChange={handleChange}
+        />
+
+        <input
+          name="contact_number"
+          placeholder="Contact Number"
+          value={form.contact_number}
+          onChange={handleChange}
+        />
+
+        <input
+          name="safety_score"
+          placeholder="Safety Score"
+          value={form.safety_score}
+          onChange={handleChange}
+        />
+
+        <button>
+
+          {editingId ? "Update Driver" : "Add Driver"}
+
+        </button>
+
+      </form>
+
+      <table className="vehicle-table">
+
+        <thead>
+
+          <tr>
+
+            <th>ID</th>
+
+            <th>Name</th>
+
+            <th>License</th>
+
+            <th>Category</th>
+
+            <th>Expiry</th>
+
+            <th>Contact</th>
+
+            <th>Score</th>
+
+            <th>Status</th>
+
+            <th>Action</th>
+
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          {drivers.map((driver) => (
+
+            <tr key={driver.id}>
+
+              <td>{driver.id}</td>
+
+              <td>{driver.full_name}</td>
+
+              <td>{driver.license_number}</td>
+
+              <td>{driver.license_category}</td>
+
+              <td>{driver.license_expiry}</td>
+
+              <td>{driver.contact_number}</td>
+
+              <td>{driver.safety_score}</td>
+
+              <td>{driver.status}</td>
+
+              <td>
+
+                <button
+                  className="edit-btn"
+                  onClick={() => editDriver(driver)}
+                >
+                  Edit
+                </button>
+
+                <button
+                  className="delete-btn"
+                  onClick={() => deleteDriver(driver.id)}
+                >
+                  Delete
+                </button>
+
+              </td>
+
+            </tr>
+
+          ))}
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  );
 
 }
 

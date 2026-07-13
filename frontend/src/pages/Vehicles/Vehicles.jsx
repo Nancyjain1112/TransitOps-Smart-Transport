@@ -4,123 +4,213 @@ import "./Vehicles.css";
 
 function Vehicles() {
 
-const [vehicles,setVehicles]=useState([]);
+  const emptyForm = {
+    registration_number: "",
+    vehicle_name: "",
+    vehicle_type: "",
+    max_load_capacity: "",
+    odometer: "",
+    acquisition_cost: "",
+    status: "Available",
+  };
 
-const [form,setForm]=useState({
-registration_number:"",
-vehicle_name:"",
-vehicle_type:"",
-max_load_capacity:"",
-odometer:"",
-acquisition_cost:""
-});
+  const [vehicles, setVehicles] = useState([]);
+  const [form, setForm] = useState(emptyForm);
+  const [editingId, setEditingId] = useState(null);
 
-useEffect(()=>{
-loadVehicles();
-},[]);
+  useEffect(() => {
+    loadVehicles();
+  }, []);
 
-const loadVehicles=async()=>{
+  const loadVehicles = async () => {
+    try {
+      const res = await api.get("/vehicles");
+      setVehicles(res.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
-const res=await api.get("/vehicles");
+  const handleChange = (e) => {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value,
+    });
+  };
 
-setVehicles(res.data);
+  const saveVehicle = async (e) => {
+    e.preventDefault();
 
-};
+    try {
 
-const handleChange=(e)=>{
+      if (editingId) {
 
-setForm({...form,[e.target.name]:e.target.value});
+        await api.put(`/vehicles/${editingId}`, form);
 
-};
+        alert("Vehicle Updated");
 
-const saveVehicle=async(e)=>{
+      } else {
 
-e.preventDefault();
+        await api.post("/vehicles", form);
 
-await api.post("/vehicles",form);
+        alert("Vehicle Added");
 
-alert("Vehicle Added");
+      }
 
-setForm({
-registration_number:"",
-vehicle_name:"",
-vehicle_type:"",
-max_load_capacity:"",
-odometer:"",
-acquisition_cost:""
-});
+      setForm(emptyForm);
+      setEditingId(null);
+      loadVehicles();
 
-loadVehicles();
+    } catch (err) {
+      alert("Operation Failed");
+      console.log(err);
+    }
+  };
 
-};
+  const editVehicle = (vehicle) => {
 
-return(
+    setEditingId(vehicle.id);
 
-<div className="page">
+    setForm({
+      registration_number: vehicle.registration_number,
+      vehicle_name: vehicle.vehicle_name,
+      vehicle_type: vehicle.vehicle_type,
+      max_load_capacity: vehicle.max_load_capacity,
+      odometer: vehicle.odometer,
+      acquisition_cost: vehicle.acquisition_cost,
+      status: vehicle.status,
+    });
 
-<h2>Vehicle Management</h2>
+  };
 
-<form onSubmit={saveVehicle}>
+  const deleteVehicle = async (id) => {
 
-<input name="registration_number" placeholder="Registration Number" onChange={handleChange} value={form.registration_number}/>
+    if (!window.confirm("Delete Vehicle?")) return;
 
-<input name="vehicle_name" placeholder="Vehicle Name" onChange={handleChange} value={form.vehicle_name}/>
+    await api.delete(`/vehicles/${id}`);
 
-<input name="vehicle_type" placeholder="Vehicle Type" onChange={handleChange} value={form.vehicle_type}/>
+    loadVehicles();
 
-<input name="max_load_capacity" placeholder="Capacity" onChange={handleChange} value={form.max_load_capacity}/>
+  };
 
-<input name="odometer" placeholder="Odometer" onChange={handleChange} value={form.odometer}/>
+  return (
 
-<input name="acquisition_cost" placeholder="Cost" onChange={handleChange} value={form.acquisition_cost}/>
+    <div className="page">
 
-<button>Add Vehicle</button>
+      <h2>🚚 Vehicle Management</h2>
 
-</form>
+      <form className="vehicle-form" onSubmit={saveVehicle}>
 
-<table>
+        <input
+          name="registration_number"
+          placeholder="Registration Number"
+          value={form.registration_number}
+          onChange={handleChange}
+        />
 
-<thead>
+        <input
+          name="vehicle_name"
+          placeholder="Vehicle Name"
+          value={form.vehicle_name}
+          onChange={handleChange}
+        />
 
-<tr>
+        <input
+          name="vehicle_type"
+          placeholder="Vehicle Type"
+          value={form.vehicle_type}
+          onChange={handleChange}
+        />
 
-<th>ID</th>
+        <input
+          name="max_load_capacity"
+          placeholder="Load Capacity"
+          value={form.max_load_capacity}
+          onChange={handleChange}
+        />
 
-<th>Name</th>
+        <input
+          name="odometer"
+          placeholder="Odometer"
+          value={form.odometer}
+          onChange={handleChange}
+        />
 
-<th>Registration</th>
+        <input
+          name="acquisition_cost"
+          placeholder="Acquisition Cost"
+          value={form.acquisition_cost}
+          onChange={handleChange}
+        />
 
-<th>Status</th>
+        <button type="submit">
+          {editingId ? "Update Vehicle" : "Add Vehicle"}
+        </button>
 
-</tr>
+      </form>
 
-</thead>
+      <table className="vehicle-table">
 
-<tbody>
+        <thead>
 
-{vehicles.map(v=>(
+          <tr>
+            <th>ID</th>
+            <th>Registration</th>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Capacity</th>
+            <th>Odometer</th>
+            <th>Cost</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
 
-<tr key={v.id}>
+        </thead>
 
-<td>{v.id}</td>
+        <tbody>
 
-<td>{v.vehicle_name}</td>
+          {vehicles.map((v) => (
 
-<td>{v.registration_number}</td>
+            <tr key={v.id}>
 
-<td>{v.status}</td>
+              <td>{v.id}</td>
+              <td>{v.registration_number}</td>
+              <td>{v.vehicle_name}</td>
+              <td>{v.vehicle_type}</td>
+              <td>{v.max_load_capacity}</td>
+              <td>{v.odometer}</td>
+              <td>₹ {v.acquisition_cost}</td>
+              <td>{v.status}</td>
 
-</tr>
+              <td>
 
-))}
+                <button
+                  className="edit-btn"
+                  onClick={() => editVehicle(v)}
+                >
+                  Edit
+                </button>
 
-</tbody>
+                <button
+                  className="delete-btn"
+                  onClick={() => deleteVehicle(v.id)}
+                >
+                  Delete
+                </button>
 
-</table>
+              </td>
 
-</div>
+            </tr>
 
-);
+          ))}
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  );
 
 }
 
